@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="50dp"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_info_avatar"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="头像"
+                    android:textColor="#333"/>
+
+                <ImageView
+                    android:id="@+id/avatar_img"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="5dp"/>
+
+            </LinearLayout>
+
+            <com.hzh.bearlive.view.ProfileEdit
+                android:id="@+id/nick_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_nickname"
+                app:key="昵称"/>
+
+            <com.hzh.bearlive.view.ProfileEdit
+                android:id="@+id/gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_gender"
+                app:key="性别"/>
+
+            <com.hzh.bearlive.view.ProfileEdit
+                android:id="@+id/sign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_sign"
+                app:key="个性签名"
+                app:value="无"/>
+
+            <com.hzh.bearlive.view.ProfileEdit
+                android:id="@+id/identification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_dialog_renzheng"
+                app:key="认证"
+                app:value="未知"/>
+
+            <com.hzh.bearlive.view.ProfileEdit
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/location"
+                app:key="地区"
+                app:value="未知"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333"/>
+
+            <com.hzh.bearlive.view.ProfileTextView
+                android:id="@+id/id_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_id"
+                app:key="ID"/>
+
+            <com.hzh.bearlive.view.ProfileTextView
+                android:id="@+id/level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_level"
+                app:key="等级"
+                app:value="0"/>
+
+            <com.hzh.bearlive.view.ProfileTextView
+                android:id="@+id/get_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_get"
+                app:key="获得票数"
+                app:value="0"/>
+
+            <com.hzh.bearlive.view.ProfileTextView
+                android:id="@+id/send_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_info_send"
+                app:key="送出票数"
+                app:value="0"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333"/>
+
+            <Button
+                android:id="@+id/btn_complete"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/btn_selector"
+                android:text="完成"
+                android:textColor="@android:color/holo_blue_dark"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
