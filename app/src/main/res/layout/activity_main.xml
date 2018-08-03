@@ -22,20 +22,20 @@
 
         <com.yinglan.alphatabs.AlphaTabView
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="28dp"
             android:layout_weight="1"
             app:tabIconNormal="@drawable/tab_home_unselected"
             app:tabIconSelected="@drawable/tab_home_selected"/>
 
         <com.yinglan.alphatabs.AlphaTabView
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             app:tabIconNormal="@drawable/tab_publish_live"/>
 
         <com.yinglan.alphatabs.AlphaTabView
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="28dp"
             android:layout_weight="1"
             app:tabIconNormal="@drawable/tab_profile_unselected"
             app:tabIconSelected="@drawable/tab_profile_selected"/>

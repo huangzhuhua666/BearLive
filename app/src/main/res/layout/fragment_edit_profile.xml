@@ -10,7 +10,9 @@
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimaryDark"
+        app:title="编辑个人信息"
+        app:titleTextColor="@android:color/white"/>
 
     <ScrollView
         android:layout_width="match_parent"

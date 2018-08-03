@@ -1,6 +1,5 @@
 package com.hzh.bearlive.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -35,20 +34,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
-        setTitleBar();
+        setSupportActionBar(mTitleBar);
         setListener();
 
     }
 
     private void setListener() {
         mBtnRegister.setOnClickListener(this);
-
-    }
-
-    private void setTitleBar() {
-        mTitleBar.setTitle("注册新用户");
-        mTitleBar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(mTitleBar);
 
     }
 

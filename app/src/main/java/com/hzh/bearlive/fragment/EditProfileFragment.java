@@ -2,7 +2,6 @@ package com.hzh.bearlive.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -79,7 +78,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
-        setTitleBar();
+        Activity activity = getActivity();
+        if (activity instanceof AppCompatActivity) {
+            ((AppCompatActivity) activity).setSupportActionBar(mTitleBar);
+        }
         setListener();
         getSelfInfo();
         return view;
@@ -172,16 +174,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     }
 
-    private void setTitleBar() {
-        mTitleBar.setTitle("编辑个人信息");
-        mTitleBar.setTitleTextColor(Color.WHITE);
-        Activity activity = getActivity();
-        if (activity instanceof AppCompatActivity) {
-            ((AppCompatActivity) activity).setSupportActionBar(mTitleBar);
-        }
-
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -230,18 +222,18 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     private void choosePic() {
         if (mChoosePicHelper == null) {
             mChoosePicHelper = new ChoosePicHelper(this, ChoosePicHelper.PicType.Avatar);
-            mChoosePicHelper.setOnChooseResultListener(new ChoosePicHelper.OnChooseResultListener() {
-                @Override
-                public void onSuccess(String url) {
-                    updateAvatar(url);
-                }
-
-                @Override
-                public void onFail(String msg) {
-                    ToastUtils.showToast("出错了！" + msg);
-                }
-            });
         }
+        mChoosePicHelper.setOnChooseResultListener(new ChoosePicHelper.OnChooseResultListener() {
+            @Override
+            public void onSuccess(String url) {
+                updateAvatar(url);
+            }
+
+            @Override
+            public void onFail(String msg) {
+                ToastUtils.showToast("出错了！" + msg);
+            }
+        });
         mChoosePicHelper.showChoosePicDialog();
 
     }
