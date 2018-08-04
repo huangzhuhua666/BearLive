@@ -50,6 +50,7 @@ public class ChoosePicHelper {
         mActivity = activity;
         mPicType = type;
         mUserProfile = MyApplication.getSelfProfile();
+        mCurrentVersion = Build.VERSION.SDK_INT;
 
     }
 
@@ -58,6 +59,7 @@ public class ChoosePicHelper {
         mActivity = mFragment.getActivity();
         mPicType = type;
         mUserProfile = MyApplication.getSelfProfile();
+        mCurrentVersion = Build.VERSION.SDK_INT;
 
     }
 
@@ -86,26 +88,20 @@ public class ChoosePicHelper {
     private void takePic() {
         mCameraFileUri = createPicUri(false);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        mCurrentVersion = Build.VERSION.SDK_INT;
         if (mCurrentVersion < 24) {
             //小于7.0版本
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraFileUri);
-            if (mFragment == null) {
-                mActivity.startActivityForResult(intent, FROM_CAMERA);
-            } else {
-                mFragment.startActivityForResult(intent, FROM_CAMERA);
-            }
         } else {
             //大于7.0版本
             ContentValues value = new ContentValues(1);
             value.put(MediaStore.Images.Media.DATA, mCameraFileUri.getPath());
             Uri uri = getImageContentUri(mCameraFileUri);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            if (mFragment == null) {
-                mActivity.startActivityForResult(intent, FROM_CAMERA);
-            } else {
-                mFragment.startActivityForResult(intent, FROM_CAMERA);
-            }
+        }
+        if (mFragment == null) {
+            mActivity.startActivityForResult(intent, FROM_CAMERA);
+        } else {
+            mFragment.startActivityForResult(intent, FROM_CAMERA);
         }
 
     }
@@ -114,7 +110,7 @@ public class ChoosePicHelper {
      * 从相册获取图片
      */
     private void getFromAlbum() {
-        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         if (mFragment == null) {
             mActivity.startActivityForResult(intent, FROM_ALBUM);
@@ -143,7 +139,7 @@ public class ChoosePicHelper {
         }
         String fileName;
         if (isCrop) {
-            fileName = id + "_crop.jpg";
+            fileName = id + System.currentTimeMillis() + "_crop.jpg";
         } else {
             fileName = id + ".jpg";
         }
@@ -196,7 +192,7 @@ public class ChoosePicHelper {
      * Activity返回结果回调
      *
      * @param requestCode 请求码
-     * @param resultCode  结果吗
+     * @param resultCode  结果码
      * @param data        数据
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,11 +245,6 @@ public class ChoosePicHelper {
             //小于7.0版本
             intent.setDataAndType(uri, "image/*");
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropUri);
-            if (mFragment == null) {
-                mActivity.startActivityForResult(intent, CROP);
-            } else {
-                mFragment.startActivityForResult(intent, CROP);
-            }
         } else {
             //大于7.0版本
             String scheme = uri.getScheme();
@@ -264,11 +255,11 @@ public class ChoosePicHelper {
                 intent.setDataAndType(contentUri, "image/*");
             }
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropUri);
-            if (mFragment == null) {
-                mActivity.startActivityForResult(intent, CROP);
-            } else {
-                mFragment.startActivityForResult(intent, CROP);
-            }
+        }
+        if (mFragment == null) {
+            mActivity.startActivityForResult(intent, CROP);
+        } else {
+            mFragment.startActivityForResult(intent, CROP);
         }
 
     }
@@ -295,7 +286,7 @@ public class ChoosePicHelper {
             public void onSuccess(CosXmlRequest cosXmlRequest, CosXmlResult cosXmlResult) {
                 //上传成功
                 if (mListener != null) {
-                    mListener.onSuccess("https://" + cosXmlResult.accessUrl);
+                    mListener.onSuccess(cosXmlResult.accessUrl);
                 }
             }
 

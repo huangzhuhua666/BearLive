@@ -42,4 +42,32 @@ public class ImageUtils {
 
     }
 
+    /**
+     * 加载正常图片
+     *
+     * @param context   Context
+     * @param url       Url
+     * @param imageView ImageView
+     */
+    public static void load(Context context, String url, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .into(imageView);
+
+    }
+
+    /**
+     * 加载正常图片
+     *
+     * @param context   Context
+     * @param resId     resId
+     * @param imageView ImageView
+     */
+    public static void load(Context context, int resId, ImageView imageView) {
+        Glide.with(context)
+                .load(resId)
+                .into(imageView);
+
+    }
+
 }

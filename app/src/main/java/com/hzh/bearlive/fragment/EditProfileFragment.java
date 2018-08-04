@@ -261,7 +261,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                             @Override
                             public void onSuccess() {//修改成功
-                                mNickName.updateValue(content);
+                                getSelfInfo();
                             }
                         });
                         break;
@@ -275,7 +275,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                             @Override
                             public void onSuccess() {//修改成功
-                                mSign.updateValue(content);
+                                getSelfInfo();
                             }
                         });
                         break;
@@ -290,7 +290,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                                     @Override
                                     public void onSuccess() {//修改成功
-                                        mIdentification.updateValue(content);
+                                        getSelfInfo();
                                     }
                                 });
                         break;
@@ -304,7 +304,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                             @Override
                             public void onSuccess() {//修改成功
-                                mLocation.updateValue(content);
+                                getSelfInfo();
                             }
                         });
                         break;
@@ -335,7 +335,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                     @Override
                     public void onSuccess() {//修改成功
-                        mGender.updateValue(isMale ? "男" : "女");
+                        getSelfInfo();
                     }
                 });
             }
@@ -360,7 +360,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             @Override
             public void onSuccess() {
                 //更新头像成功
-                ImageUtils.loadRound(getContext(), url, mAvatarImg);
+                getSelfInfo();
             }
         });
 
