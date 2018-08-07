@@ -18,14 +18,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hzh.bearlive.activity.HostLiveActivity;
 import com.hzh.bearlive.activity.R;
+import com.hzh.bearlive.api.BaseCallBack;
+import com.hzh.bearlive.api.MyOkHttp;
+import com.hzh.bearlive.app.MyApplication;
+import com.hzh.bearlive.bean.ResponseObject;
+import com.hzh.bearlive.bean.RoomInfo;
 import com.hzh.bearlive.helper.ChoosePicHelper;
+import com.hzh.bearlive.util.Constants;
 import com.hzh.bearlive.util.ImageUtils;
 import com.hzh.bearlive.util.ToastUtils;
+import com.tencent.TIMUserProfile;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import okhttp3.Call;
 
 public class CreateLiveFragment extends Fragment implements View.OnClickListener {
 
@@ -79,7 +90,7 @@ public class CreateLiveFragment extends Fragment implements View.OnClickListener
                 if (TextUtils.isEmpty(title)) {
                     ToastUtils.showToast("请输入直播标题！");
                 } else {
-                    //TODO
+                    createRoom(title);
                 }
                 break;
             default:
@@ -116,6 +127,49 @@ public class CreateLiveFragment extends Fragment implements View.OnClickListener
                 mTvTip.setVisibility(View.GONE);
             }
         });
+
+    }
+
+    /**
+     * 创建房间
+     *
+     * @param title 直播标题
+     */
+    private void createRoom(String title) {
+        TIMUserProfile selfProfile = MyApplication.getSelfProfile();
+        String nickname = TextUtils.isEmpty(selfProfile.getNickName()) ? selfProfile.getIdentifier()
+                : selfProfile.getNickName();
+
+        MyOkHttp.newBuilder().get().url(Constants.BASE_URL)
+                .addParam("userId", selfProfile.getIdentifier())
+                .addParam("userName", nickname)
+                .addParam("userAvatar", selfProfile.getFaceUrl())
+                .addParam("liveTitle", title)
+                .addParam("liveCover", mCoverUrl).build()
+                .enqueue(new BaseCallBack<ResponseObject<RoomInfo>>() {
+                    @Override
+                    public void onSuccess(ResponseObject<RoomInfo> responseObject) {
+                        if (responseObject.getCode().equals(ResponseObject.CODE_FAIL)) {
+                            ToastUtils.showToast(responseObject.getErrMsg() + "错误码：" +
+                                    responseObject.getErrCode());
+                        } else if (responseObject.getCode().equals(ResponseObject.CODE_SUCCESS)) {
+                            Intent intent = new Intent(getActivity(), HostLiveActivity.class);
+                            intent.putExtra("roomId", responseObject.getData().getRoomId());
+                            intent.putExtra("userId", responseObject.getData().getUserId());
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onError(int code) {
+                        ToastUtils.showToast("服务器异常！错误码：" + code);
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        ToastUtils.showToast(e.getMessage() + "错误码：-100");
+                    }
+                });
 
     }
 
