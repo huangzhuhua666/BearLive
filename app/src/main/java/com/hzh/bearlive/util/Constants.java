@@ -32,4 +32,25 @@ public class Constants {
     //SharePreferences-key
     public static final String IS_FIRST_LOGIN = "is_first_login";
 
+    //服务器的Url
+    public static final String BASE_URL = "http://hzhbearlive.butterfly.mopaasapp.com/roomServlet";
+
+    //创建直播房间的action
+    public static final String ACTION_CREATE = "create";
+
+    //进入直播房间的action
+    public static final String ACTION_JOIN = "join";
+
+    //退出直播房间的action
+    public static final String ACTION_QUIT = "quit";
+
+    //获取直播房间列表的action
+    public static final String ACTION_GET_LIST = "getList";
+
+    //获取观众列表的action
+    public static final String ACTION_GET_WATCHER = "getWatcher";
+
+    //心跳包检测的action
+    public static final String ACTION_HEART_BEAT = "heartBeat";
+
 }
