@@ -141,6 +141,7 @@ public class CreateLiveFragment extends Fragment implements View.OnClickListener
                 : selfProfile.getNickName();
 
         MyOkHttp.newBuilder().get().url(Constants.BASE_URL)
+                .addParam("action", Constants.ACTION_CREATE)
                 .addParam("userId", selfProfile.getIdentifier())
                 .addParam("userName", nickname)
                 .addParam("userAvatar", selfProfile.getFaceUrl())
