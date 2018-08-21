@@ -19,7 +19,7 @@ public class EditProfileGenderDialog extends TransParentDialog {
     private OnOkListener mListener;
 
     public EditProfileGenderDialog(Activity activity) {
-        super(activity);
+        super(activity, false);
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_profile_gender,
                 null, false);
         mRbMale = view.findViewById(R.id.rb_male);
@@ -36,7 +36,7 @@ public class EditProfileGenderDialog extends TransParentDialog {
     public void show(boolean isMale) {
         mRbMale.setChecked(isMale);
         mRbFemale.setChecked(!isMale);
-        show();
+        super.show();
     }
 
     @Override

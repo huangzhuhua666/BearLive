@@ -13,9 +13,13 @@ public class TransParentDialog {
     protected Activity mActivity;
     protected Dialog mDialog;
 
-    protected TransParentDialog(Activity activity) {
+    protected TransParentDialog(Activity activity, boolean isNoDim) {
         mActivity = activity;
-        mDialog = new Dialog(activity, R.style.dialog);
+        if (isNoDim) {
+            mDialog = new Dialog(activity, R.style.dialog_nodim);
+        } else {
+            mDialog = new Dialog(activity, R.style.dialog);
+        }
 
     }
 

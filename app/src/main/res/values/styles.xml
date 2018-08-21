@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
-        
+
     </style>
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
@@ -23,7 +23,23 @@
         <item name="android:background">@android:color/transparent</item>
         <!--模糊-->
         <item name="android:backgroundDimEnabled">true</item>
-        
+
+    </style>
+
+    <style name="dialog_nodim" parent="@android:style/Theme.Dialog">
+        <!--边框-->
+        <item name="android:windowFrame">@null</item>
+        <!--是否悬浮在Activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--半透明-->
+        <item name="android:windowIsTranslucent">false</item>
+        <!--无标题-->
+        <item name="android:windowNoTitle">true</item>
+        <!--背景透明-->
+        <item name="android:background">@android:color/transparent</item>
+        <!--模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+
     </style>
 
 </resources>

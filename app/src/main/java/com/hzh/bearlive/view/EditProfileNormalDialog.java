@@ -20,7 +20,7 @@ public class EditProfileNormalDialog extends TransParentDialog {
     private OnOkListener mListener;
 
     public EditProfileNormalDialog(Activity activity) {
-        super(activity);
+        super(activity, false);
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_edti_profile_normal,
                 null, false);
         mTvTitle = view.findViewById(R.id.tv_title);
@@ -65,7 +65,7 @@ public class EditProfileNormalDialog extends TransParentDialog {
         mTvTitle.setText("请输入" + title);
         mEtContent.setCompoundDrawablesWithIntrinsicBounds(redId, 0, 0, 0);
         mEtContent.setText(defaultContent);
-        show();
+        super.show();
 
     }
 

@@ -20,7 +20,7 @@ public class ChoosePicDialog extends TransParentDialog {
     private OnChooseListener mListener;
 
     public ChoosePicDialog(Activity activity) {
-        super(activity);
+        super(activity, false);
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_choose_pic,
                 null, false);
         setContentView(view);
