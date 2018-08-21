@@ -10,4 +10,48 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"/>
 
+    <FrameLayout
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <com.hzh.bearlive.view.BottomControlView
+            android:id="@+id/control_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.hzh.bearlive.view.ChatView
+            android:id="@+id/chat_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/chat_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_view">
+
+        <com.hzh.bearlive.view.ChatList
+            android:id="@+id/chat_msg_list"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_weight="1"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <com.hzh.bearlive.view.DanmuView
+        android:id="@+id/danmu_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/chat_list_view"/>
+
 </RelativeLayout>

@@ -4,13 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.hzh.bearlive.api.BaseCallBack;
 import com.hzh.bearlive.api.MyOkHttp;
 import com.hzh.bearlive.app.MyApplication;
+import com.hzh.bearlive.bean.ChatMsgInfo;
 import com.hzh.bearlive.bean.ResponseObject;
+import com.hzh.bearlive.listener.SoftKeyboardListener;
 import com.hzh.bearlive.util.Constants;
 import com.hzh.bearlive.util.ToastUtils;
+import com.hzh.bearlive.view.BottomControlView;
+import com.hzh.bearlive.view.ChatList;
+import com.hzh.bearlive.view.ChatView;
+import com.hzh.bearlive.view.DanmuView;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
@@ -41,8 +49,17 @@ public class WatcherActivity extends AppCompatActivity {
 
     @BindView(R.id.live_view)
     AVRootView mLiveView;
+    @BindView(R.id.control_view)
+    BottomControlView mControlView;
+    @BindView(R.id.chat_view)
+    ChatView mChatView;
+    @BindView(R.id.chat_msg_list)
+    ChatList mChatList;
+    @BindView(R.id.danmu_view)
+    DanmuView mDanmuView;
 
     private Timer mHeartBeatTimer = new Timer();
+    private InputMethodManager imm;
 
     private int mRoomId;
     private String mHostId;
@@ -54,7 +71,80 @@ public class WatcherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watcher);
         ButterKnife.bind(this);
         ILVLiveManager.getInstance().setAvVideoView(mLiveView);
+        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        setListener();
         joinRoom();
+
+    }
+
+    private void setListener() {
+        //软键盘显示、隐藏状态的监听
+        SoftKeyboardListener.setListener(this, new SoftKeyboardListener.OnSoftKeyboardChangeListener() {
+            @Override
+            public void onShow() {
+                mControlView.setVisibility(View.GONE);
+                mChatView.setVisibility(View.VISIBLE);
+                mChatView.etGetFocus();
+            }
+
+            @Override
+            public void onHide() {
+                mControlView.setVisibility(View.VISIBLE);
+                mChatView.setVisibility(View.GONE);
+            }
+        });
+
+        mControlView.setOnControlListener(new BottomControlView.OnControlListener() {
+            @Override
+            public void onChat() {
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+
+            @Override
+            public void onClose() {
+                quitRoom();
+            }
+        });
+
+        mChatView.setOnChatSendListener(new ChatView.OnChatSendListener() {
+            @Override
+            public void onSend(final ILVCustomCmd customCmd) {
+                //发送消息
+                customCmd.setDestId(ILiveRoomManager.getInstance().getIMGroupId());
+                ILVLiveManager.getInstance().sendCustomCmd(customCmd, new ILiveCallBack<TIMMessage>() {
+                    @Override
+                    public void onSuccess(TIMMessage data) {
+                        if (customCmd.getCmd() == Constants.CMD_CHAT_MSG_LIST) {
+                            //如果是列表类型的消息，发送给列表显示
+                            String content = customCmd.getParam();
+                            String id = MyApplication.getSelfProfile().getIdentifier();
+                            String avatar = MyApplication.getSelfProfile().getFaceUrl();
+                            ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, avatar);
+                            mChatList.addMsgInfo(info);
+                        } else if (customCmd.getCmd() == Constants.CMD_CHAT_MSG_DANMU) {
+                            String content = customCmd.getParam();
+                            String id = MyApplication.getSelfProfile().getIdentifier();
+                            String avatar = MyApplication.getSelfProfile().getFaceUrl();
+                            String name = MyApplication.getSelfProfile().getNickName();
+                            ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, avatar);
+                            mChatList.addMsgInfo(info);
+                            //添加到弹幕view
+                            if (TextUtils.isEmpty(name)) {
+                                name = id;
+                            }
+                            ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content, id, avatar, name);
+                            //添加到弹幕
+                            mDanmuView.addDanmu(danmuInfo);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+
+                    }
+                });
+            }
+        });
 
     }
 
@@ -75,7 +165,32 @@ public class WatcherActivity extends AppCompatActivity {
 
                 @Override
                 public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-                    //TODO 接收到自定义消息
+                    //接收到自定义消息
+                    switch (cmd.getCmd()) {
+                        case Constants.CMD_CHAT_MSG_LIST:
+                            String content1 = cmd.getParam();
+                            ChatMsgInfo info1 = ChatMsgInfo.createListInfo(content1, id, userProfile.getFaceUrl());
+                            mChatList.addMsgInfo(info1);
+                            break;
+                        case Constants.CMD_CHAT_MSG_DANMU:
+                            String content2 = cmd.getParam();
+                            String name = userProfile.getNickName();
+                            ChatMsgInfo info2 = ChatMsgInfo.createListInfo(content2, id, userProfile.getFaceUrl());
+                            mChatList.addMsgInfo(info2);
+                            if (TextUtils.isEmpty(name)) {
+                                name = userProfile.getIdentifier();
+                            }
+                            ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content2, id,
+                                    userProfile.getFaceUrl(), name);
+                            //添加到弹幕
+                            mDanmuView.addDanmu(danmuInfo);
+                            break;
+                        case Constants.CMD_CHAT_GIFT:
+                            //TODO 界面显示礼物动画
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 @Override
