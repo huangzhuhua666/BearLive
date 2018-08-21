@@ -12,6 +12,8 @@ import com.bumptech.glide.request.RequestOptions;
  */
 public class ImageUtils {
 
+    private ImageUtils(){}
+
     /**
      * 加载圆形图片
      *

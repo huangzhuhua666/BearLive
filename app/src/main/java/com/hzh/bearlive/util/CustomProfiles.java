@@ -7,6 +7,8 @@ import com.tencent.TIMFriendshipManager;
  */
 public class CustomProfiles {
 
+    private CustomProfiles(){}
+
     //自定义字段
     private static final String PREFIX = "Tag_Profile_Custom_";
 

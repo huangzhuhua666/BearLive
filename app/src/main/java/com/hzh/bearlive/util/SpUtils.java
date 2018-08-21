@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 public class SpUtils {
 
+    private SpUtils(){}
+
     private static SharedPreferences sp;
 
     public static void putBoolean(Context context, String key, boolean value) {

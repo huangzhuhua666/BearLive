@@ -11,6 +11,8 @@ public class ToastUtils {
 
     private static Toast mToast;
 
+    private ToastUtils(){}
+
     /**
      * 显示默认时长（Short）Toast
      *

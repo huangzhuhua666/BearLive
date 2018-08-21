@@ -5,4 +5,6 @@ package com.hzh.bearlive.util;
  */
 public class Utils {
 
+    private Utils(){}
+
 }

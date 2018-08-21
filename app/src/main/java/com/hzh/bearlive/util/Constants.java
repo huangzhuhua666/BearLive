@@ -1,9 +1,13 @@
 package com.hzh.bearlive.util;
 
+import com.tencent.livesdk.ILVLiveConstants;
+
 /**
  * 常量
  */
 public class Constants {
+
+    private Constants(){}
 
     //腾讯互动直播APP_ID
     public static final int ILIVE_APP_ID = 1400115870;
@@ -52,5 +56,14 @@ public class Constants {
 
     //心跳包检测的action
     public static final String ACTION_HEART_BEAT = "heartBeat";
+
+    //自定义发送列表聊天
+    public static final int CMD_CHAT_MSG_LIST = ILVLiveConstants.ILVLIVE_CMD_CUSTOM_LOW_LIMIT + 1;
+
+    //自定义发送弹幕聊天
+    public static final int CMD_CHAT_MSG_DANMU = ILVLiveConstants.ILVLIVE_CMD_CUSTOM_LOW_LIMIT + 2;
+
+    //自定义发送礼物
+    public static final int CMD_CHAT_GIFT = ILVLiveConstants.ILVLIVE_CMD_CUSTOM_LOW_LIMIT + 3;
 
 }
