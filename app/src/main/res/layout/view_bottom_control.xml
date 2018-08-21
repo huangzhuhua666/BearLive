@@ -26,4 +26,13 @@
         android:padding="5dp"
         android:src="@drawable/bottom_close"/>
 
+    <ImageView
+        android:id="@+id/btn_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/btn_chat"
+        android:layout_centerHorizontal="true"
+        android:padding="5dp"
+        android:src="@drawable/icon_gift"/>
+
 </RelativeLayout>

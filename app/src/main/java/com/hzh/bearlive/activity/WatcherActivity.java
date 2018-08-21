@@ -19,6 +19,7 @@ import com.hzh.bearlive.view.BottomControlView;
 import com.hzh.bearlive.view.ChatList;
 import com.hzh.bearlive.view.ChatView;
 import com.hzh.bearlive.view.DanmuView;
+import com.hzh.bearlive.view.GiftSelectDialog;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
@@ -60,10 +61,18 @@ public class WatcherActivity extends AppCompatActivity {
 
     private Timer mHeartBeatTimer = new Timer();
     private InputMethodManager imm;
+    private GiftSelectDialog mGiftSelectDialog;
 
     private int mRoomId;
     private String mHostId;
     private String mUserId;
+
+    private GiftSelectDialog.OnGiftSendListener mGiftSendListener = new GiftSelectDialog.OnGiftSendListener() {
+        @Override
+        public void onSend(ILVCustomCmd customCmd) {
+            //TODO
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +103,7 @@ public class WatcherActivity extends AppCompatActivity {
             }
         });
 
+        mControlView.setHost(false);
         mControlView.setOnControlListener(new BottomControlView.OnControlListener() {
             @Override
             public void onChat() {
@@ -103,6 +113,15 @@ public class WatcherActivity extends AppCompatActivity {
             @Override
             public void onClose() {
                 quitRoom();
+            }
+
+            @Override
+            public void onGift() {
+                if (mGiftSelectDialog == null) {
+                    mGiftSelectDialog = new GiftSelectDialog(WatcherActivity.this);
+                    mGiftSelectDialog.setOnGiftSendListener(mGiftSendListener);
+                }
+                mGiftSelectDialog.show();
             }
         });
 
