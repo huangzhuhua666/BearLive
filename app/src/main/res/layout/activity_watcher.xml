@@ -48,6 +48,12 @@
 
     </LinearLayout>
 
+    <com.hzh.bearlive.view.GiftRepeatView
+        android:id="@+id/gift_repeat_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@id/chat_list_view"/>
+
     <com.hzh.bearlive.view.DanmuView
         android:id="@+id/danmu_view"
         android:layout_width="match_parent"

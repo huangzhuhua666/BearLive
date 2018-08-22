@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.gson.Gson;
 import com.hzh.bearlive.api.BaseCallBack;
 import com.hzh.bearlive.api.MyOkHttp;
 import com.hzh.bearlive.app.MyApplication;
 import com.hzh.bearlive.bean.ChatMsgInfo;
+import com.hzh.bearlive.bean.GiftCmdInfo;
+import com.hzh.bearlive.bean.GiftInfo;
 import com.hzh.bearlive.listener.SoftKeyboardListener;
 import com.hzh.bearlive.util.Constants;
 import com.hzh.bearlive.util.ToastUtils;
@@ -18,6 +21,7 @@ import com.hzh.bearlive.view.BottomControlView;
 import com.hzh.bearlive.view.ChatList;
 import com.hzh.bearlive.view.ChatView;
 import com.hzh.bearlive.view.DanmuView;
+import com.hzh.bearlive.view.GiftRepeatView;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
 import com.tencent.av.sdk.AVRoomMulti;
@@ -56,6 +60,8 @@ public class HostLiveActivity extends AppCompatActivity {
     ChatList mChatList;
     @BindView(R.id.danmu_view)
     DanmuView mDanmuView;
+    @BindView(R.id.gift_repeat_view)
+    GiftRepeatView mGiftRepeatView;
 
     private Timer mHeartBeatTimer = new Timer();
     private InputMethodManager imm;
@@ -92,6 +98,7 @@ public class HostLiveActivity extends AppCompatActivity {
             }
         });
 
+        mControlView.setHost(true);
         mControlView.setOnControlListener(new BottomControlView.OnControlListener() {
             @Override
             public void onChat() {
@@ -101,6 +108,11 @@ public class HostLiveActivity extends AppCompatActivity {
             @Override
             public void onClose() {
                 quitLive();
+            }
+
+            @Override
+            public void onGift() {
+                //礼物
             }
         });
 
@@ -112,27 +124,28 @@ public class HostLiveActivity extends AppCompatActivity {
                 ILVLiveManager.getInstance().sendCustomCmd(customCmd, new ILiveCallBack<TIMMessage>() {
                     @Override
                     public void onSuccess(TIMMessage data) {
-                        if (customCmd.getCmd() == Constants.CMD_CHAT_MSG_LIST) {
-                            //如果是列表类型的消息，发送给列表显示
-                            String content = customCmd.getParam();
-                            String id = MyApplication.getSelfProfile().getIdentifier();
-                            String avatar = MyApplication.getSelfProfile().getFaceUrl();
-                            ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, avatar);
-                            mChatList.addMsgInfo(info);
-                        } else if (customCmd.getCmd() == Constants.CMD_CHAT_MSG_DANMU) {
-                            String content = customCmd.getParam();
-                            String id = MyApplication.getSelfProfile().getIdentifier();
-                            String avatar = MyApplication.getSelfProfile().getFaceUrl();
-                            String name = MyApplication.getSelfProfile().getNickName();
-                            ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, avatar);
-                            mChatList.addMsgInfo(info);
-                            //添加到弹幕view
-                            if (TextUtils.isEmpty(name)) {
-                                name = id;
-                            }
-                            ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content, id, avatar, name);
-                            //添加到弹幕
-                            mDanmuView.addDanmu(danmuInfo);
+                        String content = customCmd.getParam();
+                        String id = MyApplication.getSelfProfile().getIdentifier();
+                        String avatar = MyApplication.getSelfProfile().getFaceUrl();
+                        String name = MyApplication.getSelfProfile().getNickName();
+                        if (TextUtils.isEmpty(name)) {
+                            name = id;
+                        }
+                        ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, avatar);
+                        switch (customCmd.getCmd()) {
+                            case Constants.CMD_CHAT_MSG_LIST:
+                                //如果是列表类型的消息，发送给列表显示
+                                mChatList.addMsgInfo(info);
+                                break;
+                            case Constants.CMD_CHAT_MSG_DANMU:
+                                mChatList.addMsgInfo(info);
+                                //添加到弹幕view
+                                ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content, id, avatar, name);
+                                //添加到弹幕
+                                mDanmuView.addDanmu(danmuInfo);
+                                break;
+                            default:
+                                break;
                         }
                     }
 
@@ -163,27 +176,42 @@ public class HostLiveActivity extends AppCompatActivity {
                 @Override
                 public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
                     // 接收到自定义消息
+                    String content = cmd.getParam();
+                    String name = userProfile.getNickName();
+                    if (TextUtils.isEmpty(name)) {
+                        name = userProfile.getIdentifier();
+                    }
+                    ChatMsgInfo info = ChatMsgInfo.createListInfo(content, id, userProfile.getFaceUrl());
                     switch (cmd.getCmd()) {
                         case Constants.CMD_CHAT_MSG_LIST:
-                            String content1 = cmd.getParam();
-                            ChatMsgInfo info1 = ChatMsgInfo.createListInfo(content1, id, userProfile.getFaceUrl());
-                            mChatList.addMsgInfo(info1);
+                            mChatList.addMsgInfo(info);
                             break;
                         case Constants.CMD_CHAT_MSG_DANMU:
-                            String content2 = cmd.getParam();
-                            String name = userProfile.getNickName();
-                            ChatMsgInfo info2 = ChatMsgInfo.createListInfo(content2, id, userProfile.getFaceUrl());
-                            mChatList.addMsgInfo(info2);
-                            if (TextUtils.isEmpty(name)) {
-                                name = userProfile.getIdentifier();
-                            }
-                            ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content2, id,
+                            mChatList.addMsgInfo(info);
+                            ChatMsgInfo danmuInfo = ChatMsgInfo.createDanmuInfo(content, id,
                                     userProfile.getFaceUrl(), name);
                             //添加到弹幕
                             mDanmuView.addDanmu(danmuInfo);
                             break;
                         case Constants.CMD_CHAT_GIFT:
-                            //TODO 界面显示礼物动画
+                            //界面显示礼物动画
+                            GiftCmdInfo giftCmdInfo = new Gson().fromJson(cmd.getParam(), GiftCmdInfo.class);
+                            GiftInfo gift = GiftInfo.getGiftById(giftCmdInfo.getGiftId());
+                            String repeatId = giftCmdInfo.getRepeatId();
+                            if (gift == null) {
+                                return;
+                            }
+                            switch (gift.getType()) {
+                                case ContinueGift:
+                                    mGiftRepeatView.showGift(gift, repeatId, userProfile);
+                                    break;
+                                case FullScreenGift:
+                                    //全屏礼物
+                                    //TODO
+                                    break;
+                                default:
+                                    break;
+                            }
                             break;
                         default:
                             break;

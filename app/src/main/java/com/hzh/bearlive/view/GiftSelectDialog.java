@@ -2,9 +2,11 @@ package com.hzh.bearlive.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +16,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.hzh.bearlive.activity.R;
+import com.hzh.bearlive.bean.GiftCmdInfo;
 import com.hzh.bearlive.bean.GiftInfo;
+import com.hzh.bearlive.util.Constants;
 import com.tencent.livesdk.ILVCustomCmd;
+import com.tencent.livesdk.ILVText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,32 @@ public class GiftSelectDialog extends TransParentDialog {
     private List<GiftGridView> pages = new ArrayList<>();
     private GiftInfo mSelectedGift;
     private OnGiftSendListener mListener;
+    private Handler sendRepeatTimer = new Handler();
+
+    private Runnable updateTime = new Runnable() {
+        @Override
+        public void run() {
+            mBtnSend.setText("发送(" + leftTime + "s)");
+            sendRepeatTimer.postDelayed(minutesTime, 200);
+        }
+    };
+
+    private Runnable minutesTime = new Runnable() {
+        @Override
+        public void run() {
+            leftTime--;
+            if (leftTime > 0) {
+                mBtnSend.setText("发送(" + leftTime + "s");
+                sendRepeatTimer.postDelayed(this, 200);
+            } else {
+                mBtnSend.setText("发送");
+                repeatId = "";
+            }
+        }
+    };
+
+    private int leftTime = 10;
+    private String repeatId = "";
 
     static {
         mGiftList.add(GiftInfo.Gift_BingGun);
@@ -60,11 +92,26 @@ public class GiftSelectDialog extends TransParentDialog {
 
         mBtnSend = view.findViewById(R.id.btn_send);
         mBtnSend.setEnabled(false);
+        setOnClick();
 
     }
 
     public void setOnGiftSendListener(OnGiftSendListener listener) {
         mListener = listener;
+
+    }
+
+    private void restartTimer() {
+        stopTimer();
+        sendRepeatTimer.post(updateTime);
+
+    }
+
+    private void stopTimer() {
+        sendRepeatTimer.removeCallbacks(updateTime);
+        sendRepeatTimer.removeCallbacks(minutesTime);
+        mBtnSend.setText("发送");
+        leftTime = 10;
 
     }
 
@@ -98,7 +145,18 @@ public class GiftSelectDialog extends TransParentDialog {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    //TODO
+                    if (TextUtils.isEmpty(repeatId)) {
+                        repeatId = System.currentTimeMillis() + "";
+                    }
+                    ILVCustomCmd customCmd = new ILVCustomCmd();
+                    customCmd.setCmd(Constants.CMD_CHAT_GIFT);
+                    customCmd.setType(ILVText.ILVTextType.eGroupMsg);
+                    GiftCmdInfo giftCmdInfo = new GiftCmdInfo(mSelectedGift.getGiftId(), repeatId);
+                    customCmd.setParam(new Gson().toJson(giftCmdInfo));
+                    mListener.onSend(customCmd);
+                    if (mSelectedGift.getType() == GiftInfo.Type.ContinueGift) {
+                        restartTimer();
+                    }
                 }
             }
         });
