@@ -21,6 +21,7 @@ import com.hzh.bearlive.view.BottomControlView;
 import com.hzh.bearlive.view.ChatList;
 import com.hzh.bearlive.view.ChatView;
 import com.hzh.bearlive.view.DanmuView;
+import com.hzh.bearlive.view.GiftFullView;
 import com.hzh.bearlive.view.GiftRepeatView;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
@@ -62,6 +63,8 @@ public class HostLiveActivity extends AppCompatActivity {
     DanmuView mDanmuView;
     @BindView(R.id.gift_repeat_view)
     GiftRepeatView mGiftRepeatView;
+    @BindView(R.id.gift_full_view)
+    GiftFullView mGiftFullView;
 
     private Timer mHeartBeatTimer = new Timer();
     private InputMethodManager imm;
@@ -207,7 +210,7 @@ public class HostLiveActivity extends AppCompatActivity {
                                     break;
                                 case FullScreenGift:
                                     //全屏礼物
-                                    //TODO
+                                    mGiftFullView.showGift(gift, userProfile);
                                     break;
                                 default:
                                     break;

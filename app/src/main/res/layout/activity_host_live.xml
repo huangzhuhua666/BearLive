@@ -60,4 +60,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/chat_list_view"/>
 
+    <com.hzh.bearlive.view.GiftFullView
+        android:id="@+id/gift_full_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

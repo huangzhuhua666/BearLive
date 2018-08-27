@@ -22,6 +22,7 @@ import com.hzh.bearlive.view.BottomControlView;
 import com.hzh.bearlive.view.ChatList;
 import com.hzh.bearlive.view.ChatView;
 import com.hzh.bearlive.view.DanmuView;
+import com.hzh.bearlive.view.GiftFullView;
 import com.hzh.bearlive.view.GiftRepeatView;
 import com.hzh.bearlive.view.GiftSelectDialog;
 import com.tencent.TIMFriendshipManager;
@@ -64,6 +65,8 @@ public class WatcherActivity extends AppCompatActivity {
     DanmuView mDanmuView;
     @BindView(R.id.gift_repeat_view)
     GiftRepeatView mGiftRepeatView;
+    @BindView(R.id.gift_full_view)
+    GiftFullView mGiftFullView;
 
     private Timer mHeartBeatTimer = new Timer();
     private InputMethodManager imm;
@@ -81,7 +84,7 @@ public class WatcherActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(TIMMessage data) {
                     if (customCmd.getCmd() == Constants.CMD_CHAT_GIFT) {
-                        showGift(customCmd);
+                        showGift(customCmd, MyApplication.getSelfProfile());
                     }
                 }
 
@@ -223,7 +226,7 @@ public class WatcherActivity extends AppCompatActivity {
                             mDanmuView.addDanmu(danmuInfo);
                             break;
                         case Constants.CMD_CHAT_GIFT:
-                            showGift(cmd);
+                            showGift(cmd, userProfile);
                             break;
                         default:
                             break;
@@ -278,7 +281,7 @@ public class WatcherActivity extends AppCompatActivity {
      *
      * @param cmd cmd
      */
-    private void showGift(ILVCustomCmd cmd) {
+    private void showGift(ILVCustomCmd cmd, TIMUserProfile userProfile) {
         //界面显示礼物动画
         GiftCmdInfo giftCmdInfo = new Gson().fromJson(cmd.getParam(), GiftCmdInfo.class);
         GiftInfo gift = GiftInfo.getGiftById(giftCmdInfo.getGiftId());
@@ -288,11 +291,11 @@ public class WatcherActivity extends AppCompatActivity {
         }
         switch (gift.getType()) {
             case ContinueGift:
-                mGiftRepeatView.showGift(gift, repeatId, MyApplication.getSelfProfile());
+                mGiftRepeatView.showGift(gift, repeatId, userProfile);
                 break;
             case FullScreenGift:
                 //全屏礼物
-                //TODO
+                mGiftFullView.showGift(gift, userProfile);
                 break;
             default:
                 break;

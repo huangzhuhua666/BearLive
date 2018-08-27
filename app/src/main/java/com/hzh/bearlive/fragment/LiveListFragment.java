@@ -232,14 +232,14 @@ public class LiveListFragment extends Fragment {
             if (TextUtils.isEmpty(cover)) {
                 ImageUtils.load(mContext, R.drawable.default_cover, liveCover);
             } else {
-                ImageUtils.load(mContext, cover, liveCover);
+                ImageUtils.load(mContext, "https://" + cover, liveCover);
             }
             //主播头像
             String avatar = roomInfo.getUserAvatar();
             if (TextUtils.isEmpty(avatar)) {
                 ImageUtils.loadRound(mContext, R.drawable.default_avatar, hostAvatar);
             } else {
-                ImageUtils.loadRound(mContext, avatar, hostAvatar);
+                ImageUtils.loadRound(mContext, "https://" + avatar, hostAvatar);
             }
             //主播名字
             hostName.setText(TextUtils.isEmpty(roomInfo.getUserNickname()) ? roomInfo.getUserId() :
