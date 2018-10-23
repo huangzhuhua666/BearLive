@@ -9,9 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hzh.bearlive.app.MyApplication;
 import com.hzh.bearlive.util.Constants;
 import com.hzh.bearlive.util.SpUtils;
 import com.hzh.bearlive.util.ToastUtils;
+import com.tencent.TIMFriendshipManager;
+import com.tencent.TIMUserProfile;
+import com.tencent.TIMValueCallBack;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 
@@ -80,6 +84,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 startActivity(new Intent(LoginActivity.this,
                                         EditProfileActivity.class));
                             } else {//非首次登陆，直接进入主界面
+                                TIMFriendshipManager.getInstance().getSelfProfile(new TIMValueCallBack<TIMUserProfile>() {
+                                    @Override
+                                    public void onError(int i, String s) {
+                                        ToastUtils.showToast("获取信息失败！");
+                                    }
+
+                                    @Override
+                                    public void onSuccess(TIMUserProfile userProfile) {
+                                        MyApplication.setSelfProfile(userProfile);
+                                    }
+                                });
                                 startActivity(new Intent(LoginActivity.this,
                                         MainActivity.class));
                             }
